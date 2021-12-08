@@ -1,0 +1,9 @@
+.idea/*
+*.pyc
+*.log
+.DS_Store
+*.sqlite3
+*/venv/*
+/venv/*
+*.xml
+*.iml
