@@ -14,9 +14,9 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
 while True:
-    # outdata = input('please input message: ')
-    out_data = "heartbeat"
-    print('send: ' + out_data)
+    # out_data = input('please input message: ')
+    out_data = "heartbeat2"
+    # print('send: ' + out_data)
     s.send(out_data.encode())
 
     in_data = s.recv(1024)

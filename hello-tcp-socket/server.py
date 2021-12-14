@@ -1,6 +1,8 @@
 import socket
 
-# 建立socket：s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)，並指定 socket.AF_INET (TCP) 的通訊協定
+# 建立socket：s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)，
+# 並指定 socket.AF_INET (Internet Protocol) family 的通訊協定，
+# 類型使用 socket.SOCK_STREAM (Stream Socket) 也就是 TCP 傳輸方式
 # 綁定socket到本地IP與port：s.bind()
 # 開始監聽：s.listen()
 # 等待與接受客戶端的請求連線：s.accept()
