@@ -28,9 +28,9 @@ async def await_func():
 
 
 if __name__ == "__main__":
-    # hello()
+    hello()
 
-    asyncio.run(await_func())
+    # asyncio.run(await_func())
     # s = now()
     # for i in range(5):
     #     dosomething2(i)
