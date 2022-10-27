@@ -56,6 +56,20 @@ def create_user(userForm: UserBase, db: Session = Depends(get_db_session)):
         return HTTPException(**err.__dict__)
 
 
+@app.put("/users/{user_id}", response_model=UserUpdate)
+def update_user(user_id: int, user_form: UserBase, db: Session = Depends(get_db_session)):
+    return crud.update_user(db, user_id, user_form)
+
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db_session)):
+    try:
+        crud.delete_user(db, user_id)
+    except Exception as err:
+        raise HTTPException(status_code=404, detail="404 Not Found.")
+    return {"code": 0}
+
+
 @app.get("/users_q/{user_id}")  # 指定 api 路徑 (get方法)
 def read_user(user_id: int, q: Optional[int] = None):
     return {"user_id": user_id, "q": q}
