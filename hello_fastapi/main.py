@@ -1,20 +1,76 @@
 import uvicorn
 from typing import Optional, List
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 
 from fastapi.responses import HTMLResponse
+from flask_sqlalchemy.session import Session
+from starlette.middleware.cors import CORSMiddleware
 from starlette.websockets import WebSocketDisconnect
+
+from hello_fastapi import crud
+from hello_fastapi.database import get_db_session
+from hello_fastapi.schemas import UserBase, UserUpdate, UserType
 
 app = FastAPI()  # 建立一個 Fast API application
 
+# -----------------------------------
+origins = ["http://localhost:8000"]
 
-# @app.get("/")  # 指定 api 路徑 (get方法)
-# def read_root():
-#     return {"Hello": "World"}
+app.add_middleware(CORSMiddleware,
+                   allow_origins=origins,
+                   allow_credentials=True,
+                   allow_methods=["*"],
+                   allow_headers=["*"])
 
 
-@app.get("/users/{user_id}")  # 指定 api 路徑 (get方法)
+# -----------------------------------
+
+@app.get("/test")  # 指定 api 路徑 (get方法)
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.get("/users/{user_id}", response_model=UserUpdate)
+def read_user_id(user_id: int, db: Session = Depends(get_db_session)):
+    res = crud.get_user_by_id(db, user_id)
+    if res is None:
+        raise HTTPException(status_code=404, detail="404 Not Found.")
+    return res
+
+
+@app.get("/users", response_model=UserType)
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db_session)):
+    res = crud.get_users(db, skip, limit)
+    return {"skip": skip, "limit": limit, "data": res}
+    # return {"data": [jsonable_encoder(r) for r in res]}
+
+
+@app.post("/users", response_model=UserBase)
+def create_user(userForm: UserBase, db: Session = Depends(get_db_session)):
+    try:
+        res = crud.create_user(db, userForm)
+        return jsonable_encoder(res)
+    except Exception as err:
+        return HTTPException(**err.__dict__)
+
+
+@app.put("/users/{user_id}", response_model=UserUpdate)
+def update_user(user_id: int, user_form: UserBase, db: Session = Depends(get_db_session)):
+    return crud.update_user(db, user_id, user_form)
+
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db_session)):
+    try:
+        crud.delete_user(db, user_id)
+    except Exception as err:
+        raise HTTPException(status_code=404, detail="404 Not Found.")
+    return {"code": 0}
+
+
+@app.get("/users_q/{user_id}")  # 指定 api 路徑 (get方法)
 def read_user(user_id: int, q: Optional[int] = None):
     return {"user_id": user_id, "q": q}
 
