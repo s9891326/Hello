@@ -1,5 +1,6 @@
 ## Template Method Pattern
 ### 在一個方法中定義一個算法的骨架，而將一些步驟延遲到子類中。
+### 一組行為不盡相同想到template pattern
 
 ---
 
