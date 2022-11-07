@@ -16,6 +16,7 @@ import copy
 from collections import OrderedDict
 
 
+
 class Book:
     def __init__(self, name, authors, price, **rest):
         """
