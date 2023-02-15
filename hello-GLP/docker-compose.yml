@@ -12,9 +12,9 @@ services:
   promtail:
     image: grafana/promtail:2.6.0
     volumes:
-      - ./prometheus/:/etc/prometheus/
+      - ./promtail/:/etc/promtail/
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--config.file=/etc/promtail/promtail.yml"
     networks:
       - glp
     restart: always
