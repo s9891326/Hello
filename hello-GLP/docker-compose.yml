@@ -2,7 +2,7 @@ version: "3"
 
 services:
   grafana:
-    image: grafana/grafana:6.5.2
+    image: grafana/grafana:latest
     ports:
       - "3060:3000"
     networks:
@@ -10,16 +10,17 @@ services:
     restart: always
 
   promtail:
-    image: grafana/promtail:2.6.0
+    image: grafana/promtail:2.3.0
     volumes:
       - ./promtail.yml:/etc/promtail/promtail-config.yml
+      - ./error.log:/opt/nginx_access.log
     command: -config.file=/etc/promtail/promtail-config.yml
     networks:
       - loki
     restart: always
 
   loki:
-    image: grafana/loki:2.6.0
+    image: grafana/loki:2.3.0
     volumes:
       - ./loki-config.yml:/etc/loki/loki-config.yml
     command: -config.file=/etc/loki/loki-config.yml
