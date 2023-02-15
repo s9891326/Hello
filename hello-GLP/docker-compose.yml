@@ -2,7 +2,7 @@ version: "3"
 
 services:
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:8.2.6
     ports:
       - "3060:3000"
     networks:
