@@ -3,7 +3,7 @@ from functools import wraps
 
 import warnings
 import sqlalchemy
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import sessionmaker, declarative_base
 from testcontainers.postgres import PostgresContainer
 
@@ -15,14 +15,14 @@ class User(Base):
 
     uid = Column(String(100), primary_key=True, unique=True, index=True)
     name = Column(String(100))
-    picture = Column(String(255))
+    age = Column(Integer)
 
     def __str__(self):
-        return f"User uid: {self.uid}, name: {self.name}, picture: {self.picture}"
+        return f"User uid: {self.uid}, name: {self.name}, age: {self.age}"
 
 
 def create_user(db, user):
-    db_user = User(uid=user.uid, name=user.name, picture=user.picture)
+    db_user = User(uid=user.uid, name=user.name, age=user.age)
     db.add(db_user)
     db.commit()
     return db_user
@@ -52,11 +52,11 @@ class TestUserCRUD(unittest.TestCase):
 
     @db_mask
     def test_create_user(self, db):
-        user = create_user(db, User(uid="1", name="eddy", picture="https://xx"))
+        user = create_user(db, User(uid="1", name="eddy", age=18))
 
         self.assertEqual(user.uid, "1")
         self.assertEqual(user.name, "eddy")
-        self.assertEqual(user.picture, "https://xx")
+        self.assertEqual(user.age, 18)
         print(user)
 
 
