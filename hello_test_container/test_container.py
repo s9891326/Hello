@@ -1,11 +1,10 @@
 import unittest
-from dataclasses import dataclass
 from functools import wraps
 
-import psycopg2
+import warnings
 import sqlalchemy
-from sqlalchemy import text, Column, String
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from sqlalchemy import Column, String
+from sqlalchemy.orm import sessionmaker, declarative_base
 from testcontainers.postgres import PostgresContainer
 
 Base = declarative_base()
@@ -29,13 +28,6 @@ def create_user(db, user):
     return db_user
 
 
-@dataclass
-class UserSchema:
-    uid: str
-    name: str
-    picture: str
-
-
 def db_mask(func):
     @wraps(func)
     def wrapper(*args):
@@ -54,9 +46,13 @@ def db_mask(func):
 
 
 class TestUserCRUD(unittest.TestCase):
+    def setUp(self) -> None:
+        # 解决ResourceWarning: Enable tracemalloc to get the object allocation traceback
+        warnings.simplefilter('ignore', ResourceWarning)
+
     @db_mask
     def test_create_user(self, db):
-        user = create_user(db, UserSchema(uid="1", name="eddy", picture="https://xx"))
+        user = create_user(db, User(uid="1", name="eddy", picture="https://xx"))
 
         self.assertEqual(user.uid, "1")
         self.assertEqual(user.name, "eddy")
