@@ -9,9 +9,9 @@
 ## 實作分享
 1. 安裝套件
 ```
-pip install testcontainers
-pip install SQLAlchemy
-pip install psycopg2-binary
+pip install testcontainers==3.4.2
+pip install SQLAlchemy==1.4.45
+pip install psycopg2-binary==2.9
 ```
 2. 定義model(DB table)
 3. 撰寫db_mask

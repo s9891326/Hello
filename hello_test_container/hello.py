@@ -1,5 +1,6 @@
 import unittest
 from dataclasses import dataclass
+from functools import wraps
 
 import psycopg2
 import sqlalchemy
@@ -21,7 +22,7 @@ class User(Base):
         return f"User uid: {self.uid}, name: {self.name}, picture: {self.picture}"
 
 
-def create_user(db: Session, user):
+def create_user(db, user):
     db_user = User(uid=user.uid, name=user.name, picture=user.picture)
     db.add(db_user)
     db.commit()
@@ -35,32 +36,32 @@ class UserSchema:
     picture: str
 
 
-def db_mask(postgres):
-    engine = sqlalchemy.create_engine(postgres.get_connection_url())
-    test_session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    Base.metadata.create_all(bind=engine)
+def db_mask(func):
+    @wraps(func)
+    def wrapper(*args):
+        with PostgresContainer("postgres:9.5") as postgres:
+            engine = sqlalchemy.create_engine(postgres.get_connection_url())
+            session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+            Base.metadata.create_all(bind=engine)
 
-    def override_get_db():
-        try:
-            db = test_session_local()
-            yield db
-        finally:
-            db.close()
-
-    return override_get_db()
+            db = session_local()
+            try:
+                func(db=db, *args)
+            finally:
+                print("close db")
+                db.close()
+    return wrapper
 
 
 class TestUserCRUD(unittest.TestCase):
-    def test_create_user(self):
-        with PostgresContainer("postgres:9.5") as postgres:
-            db = next(db_mask(postgres))
-            user = create_user(db, UserSchema(uid="1", name="eddy", picture="https://xx"))
+    @db_mask
+    def test_create_user(self, db):
+        user = create_user(db, UserSchema(uid="1", name="eddy", picture="https://xx"))
 
-            self.assertEqual(user.uid, "1")
-            self.assertEqual(user.name, "eddy")
-            self.assertEqual(user.picture, "https://xx")
-            print(user)
-            self.assertEqual(user.uid, "2")
+        self.assertEqual(user.uid, "1")
+        self.assertEqual(user.name, "eddy")
+        self.assertEqual(user.picture, "https://xx")
+        print(user)
 
 
 if __name__ == '__main__':
