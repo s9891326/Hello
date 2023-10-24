@@ -29,6 +29,14 @@
 
 ### Helm
 - 是一個管理設定檔的工具
+    ```shell
+    helm create xxx
+    helm install --generate-name bitnami/wordpress
+    helm install --set name=hello-helm myhelm hello-helm
+    helm upgrade myhelm hello-helm
+    helm list
+    ```
+
 
 ### 相關指令
 - kubectl
@@ -51,6 +59,7 @@
     kubectl delete service xxx
     kubectl delete deploy xxx
     
+    kubectl api-resources  # 查看kubectl內各項資源的名稱和內建的簡寫
     ```
 
 - minikube
@@ -85,6 +94,7 @@ use the target machine actively refused it.
       name: minikube
     
     最終重新啟動minikube才啟動成功，並更改對應的port(`56800`)
+    minikube start
     ```
 
 2. 當運行 `minikube ip` 噴`Unable to resolve the current Docker CLI context "default"`，對應的json config設定位置跑掉
