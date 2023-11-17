@@ -5,17 +5,16 @@ metadata:
   labels:
     app: ingress-blue
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: blue.demo.com
-      http:
+    - http:
         paths:
-          - path: /
+          - path: /blue(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: blue-service
+                name: purple-service
                 port:
                   number: 80
 #    - host: purple.demo.com

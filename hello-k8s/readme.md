@@ -26,6 +26,37 @@
 ### Ingress
 - 根據 `hostname` 或是 `pathname` 決定請求要轉發到哪個 Service 上(`類似nginx透過path來轉發各個請求`)，之後就可以利用該 Service 連接到 Pod 做事情了，而 K8s 的 Ingress 會統一開 http 的 80 port 以及 https 的 443 port
 
+### Volume
+- 跟docker上的一樣，提供一個位置讓pod產生的資料有地方可以存。但會有儲存位置的耦合(docker通常都是用local端某個資料夾來當作volume)，這樣就會綁死volume的位置，無法隨時抽換
+- 所以k8s提出了`PV/PVC(PersistentVolume/PersistentVolumeClaims)`，來解決Pod與具體存儲Volume耦合
+- `PVC` 是 K8s 提供的解耦機制在`Volume`跟`PV`之間多一層抽象
+- `PV` 是 K8s持久化的抽象底層可以對接實體儲存
+  - PV對應的訪問模式
+    ```shell
+    RWO: ReadWriteOnce
+    ROX: ReadOnlyMany
+    RWX: ReadWriteMany
+    ```
+  - PV 有四種狀態 (STATUS)
+    1. Available：表示 PV 為可用狀態
+    2. Bound：表示已綁定到 PVC
+    3. Released：PVC 已被刪除，但是尚未回收
+    4. Failed：回收失敗
+  - PV 有三種回收策略 (RECLAIM POLICY)，分別是
+    1. Retain：手動回收
+    2. Recycle：透過刪除命令 rm -rf /thevolume/*
+    3. Delete：用於 AWS EBS, GCE PD, Azure Disk 等儲存後端，刪除 PV 的同時也會一併刪除後端儲存磁碟。
+
+### 啟動方式
+1. 開啟docker、kubectl
+2. 開啟minikube
+```shell
+minikube start
+```
+4. 開啟對應的連線
+```shell
+minikube tunnel --cleanup
+```
 
 ### Helm
 - 是一個管理設定檔的工具
@@ -77,7 +108,6 @@
 ### QA
 1. E1021 19:15:53.638782   19568 memcache.go:265] couldn't get current server API group list: Get "https://127.0.0.1:52378/api?timeout=32s": dial tcp 127.0.0.1:52378: connectex: No connection could be made beca
 use the target machine actively refused it.
-- A:
     ```shell
     執行 kubectl get nodes -v=10 發現kubectl config是從這裡拉取設定檔的(C:\Users\eddy\.kube\config)
     查看對應的config檔，終於找到對應的ip了
@@ -92,7 +122,9 @@ use the target machine actively refused it.
           name: cluster_info
         server: https://127.0.0.1:52378
       name: minikube
-    
+   ```
+- A:
+    ```shell
     最終重新啟動minikube才啟動成功，並更改對應的port(`56800`)
     minikube start
     ```
@@ -109,3 +141,7 @@ use the target machine actively refused it.
     kubectl exec -ti -n ingress-nginx pod_name -- //bin//bash
     ```
 
+### 參考網站
+1. [PV/PVC管理](https://medium.com/k8s%E7%AD%86%E8%A8%98/kubernetes-k8s-pv-pvc-%E5%84%B2%E5%AD%98%E5%A4%A7%E5%B0%8F%E4%BA%8B%E4%BA%A4%E7%B5%A6pv-pvc%E7%AE%A1%E7%90%86-4d412b8bafb5)
+2. [30天鐵人賽](https://ithelp.ithome.com.tw/articles/10193550)
+4. [PV/PVC介紹](https://blog.toright.com/posts/6541/kubernetes-persistent-volume.html)
