@@ -24,6 +24,12 @@ metadata:
   name: purple-nginx-deploy
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -33,7 +39,7 @@ spec:
         - name: nginx
           image: hcwxd/purple-whale
           ports:
-            - containerPort: 3000
+            - containerPort: 3001
   selector:
     matchLabels:
       app: purple-nginx
