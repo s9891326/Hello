@@ -1,9 +1,5 @@
 ## K8s學習指令
 
-- [教學](https://chengweihu.com/kubernetes-tutorial-2-service-deployment-ingress/)
-- [教學2](https://alankrantas.medium.com/%E7%AD%86%E8%A8%98-%E5%9C%A8%E6%9C%AC%E6%A9%9F-kubernetes-%E7%92%B0%E5%A2%83%E4%BD%88%E7%BD%B2%E5%AE%B9%E5%99%A8%E4%B8%A6%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-ingress-%E4%BC%BA%E6%9C%8D%E5%99%A8-%E4%BD%BF%E7%94%A8-minikube-%E8%88%87%E5%96%AE%E4%B8%80-yaml-%E6%AA%94%E5%AF%A6%E4%BD%9C-1d25228e6416)
-- [官方教學](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/#what-s-next)
-
 ### Pod
 - 是k8s可運行的最小`單位`(類似`公分`這個長度單位)。pod內可以跑多個docker container，但還是推薦一個pod內只跑一個docker container
    ```shell
@@ -46,6 +42,10 @@
     1. Retain：手動回收
     2. Recycle：透過刪除命令 rm -rf /thevolume/*
     3. Delete：用於 AWS EBS, GCE PD, Azure Disk 等儲存後端，刪除 PV 的同時也會一併刪除後端儲存磁碟。
+  
+### RBAC(Role-Base Access Controller)
+- 管制用戶/Group訪問k8s API的機制。透過適當的角色配置與授權分配，管理者可以決定使用者能夠使用哪些功能。例如允許某個角色能新增 Pod 或只能夠察看但是不能新增等等。
+- [說明](https://ithelp.ithome.com.tw/articles/10195944)
 
 ### 啟動方式
 1. 開啟docker、kubectl
@@ -67,7 +67,6 @@ minikube tunnel --cleanup
     helm upgrade myhelm hello-helm
     helm list
     ```
-
 
 ### 相關指令
 - kubectl
@@ -144,4 +143,7 @@ use the target machine actively refused it.
 ### 參考網站
 1. [PV/PVC管理](https://medium.com/k8s%E7%AD%86%E8%A8%98/kubernetes-k8s-pv-pvc-%E5%84%B2%E5%AD%98%E5%A4%A7%E5%B0%8F%E4%BA%8B%E4%BA%A4%E7%B5%A6pv-pvc%E7%AE%A1%E7%90%86-4d412b8bafb5)
 2. [30天鐵人賽](https://ithelp.ithome.com.tw/articles/10193550)
-4. [PV/PVC介紹](https://blog.toright.com/posts/6541/kubernetes-persistent-volume.html)
+3. [PV/PVC介紹](https://blog.toright.com/posts/6541/kubernetes-persistent-volume.html)
+4. [教學](https://chengweihu.com/kubernetes-tutorial-2-service-deployment-ingress/)
+5. [教學2](https://alankrantas.medium.com/%E7%AD%86%E8%A8%98-%E5%9C%A8%E6%9C%AC%E6%A9%9F-kubernetes-%E7%92%B0%E5%A2%83%E4%BD%88%E7%BD%B2%E5%AE%B9%E5%99%A8%E4%B8%A6%E4%B8%B2%E6%8E%A5%E6%9C%8D%E5%8B%99-ingress-%E4%BC%BA%E6%9C%8D%E5%99%A8-%E4%BD%BF%E7%94%A8-minikube-%E8%88%87%E5%96%AE%E4%B8%80-yaml-%E6%AA%94%E5%AF%A6%E4%BD%9C-1d25228e6416)
+6. [官方教學](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/#what-s-next)
