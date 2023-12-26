@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-empty-nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+#    emptyDir: 是屬於臨時性的目錄，當 Pod 被刪除的同時該目錄也會被刪除
+#    volumeMounts:
+#    - mountPath: /tmp/conf
+#      name: empty-volume
+#  volumes:
+#  - name: empty-volume
+#    emptyDir: {}
+
+# hostPath: 指定一個 Node 的目錄掛載到 Pod 中使用
+#    volumeMounts:
+#    - mountPath: /tmp/conf
+#      name: hostpath-volume
+#  volumes:
+#  - name: hostpath-volume
+#    hostPath:
+#      path: /tmp/hostpathdata
+
+# pv: 是 K8s持久化的抽象底層可以對接實體儲存
+    volumeMounts:
+    - mountPath: /usr/share/nginx/html
+      name: volume-pvc
+  volumes:
+  - name: volume-pvc
+    persistentVolumeClaim:
+      claimName: local-pvc
+      
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-pvc
+spec:
+  storageClassName: local-stardard
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Mi

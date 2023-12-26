@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-kubernetes-client-pod
+  labels:
+    app: webserver
+spec:
+  containers:
+  - name: hello-kubernetes-client
+    image: wrre/hello-kubernetes-client:v1
+    ports:
+    - containerPort: 3000

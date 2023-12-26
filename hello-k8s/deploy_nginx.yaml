@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-nginx-deploy
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: blue-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: hcwxd/blue-whale
+          ports:
+            - containerPort: 3000
+  selector:
+    matchLabels:
+      app: blue-nginx
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purple-nginx-deploy
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: purple-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: hcwxd/purple-whale
+          ports:
+            - containerPort: 3001
+  selector:
+    matchLabels:
+      app: purple-nginx
