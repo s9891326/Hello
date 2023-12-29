@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "follow-ithelp"
+version = "0.1.0"
+description = ""
+authors = ["Eddy <eddy15201@gmail.com>"]
+readme = "README.md"
+packages = [{include = "follow_ithelp"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.106.0"
+uvicorn = "^0.25.0"
+python-dotenv = "^1.0.0"
+psycopg2 = "^2.9.9"
+pymysql = "^1.1.0"
+sqlalchemy = "^2.0.23"
+cryptography = "^41.0.7"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
