@@ -13,14 +13,31 @@ def setup():
     os.environ["RUN_MODE"] = "ASYNC"
 
 
+@pytest.fixture()
+def client():
+    from hello_fastapi.follow_ithelp.main import app
+
+    return TestClient(app)
+
+
 # @pytest.mark.usefixtures("setup")
 class TestCrudApi:
-    def test_hello(self):
-        from hello_fastapi.follow_ithelp.main import app
-        client = TestClient(app)
+    def test_hello(self, client):
         result = client.get("/")
         print(result)
 
+    @pytest.mark.parametrize(
+        "endpoint,message",
+        [
+            ("/hello", "4444"),
+        ],
+    )
+    def test_invalid_context_dependency(self, client, endpoint, message):
+        with pytest.raises(Exception) as exc_info:
+            client.get(endpoint)
+        print(str(exc_info.value))
+        assert str(exc_info.value) == message
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     pytest.main()

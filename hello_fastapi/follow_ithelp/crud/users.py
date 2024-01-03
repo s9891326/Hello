@@ -6,7 +6,7 @@ from hello_fastapi.follow_ithelp.models.users import User
 from hello_fastapi.follow_ithelp.schemas import users as UserSchema
 
 
-class UserCrud:
+class UserCrudManager:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
@@ -46,6 +46,6 @@ class UserCrud:
         return users
 
 
-async def get_user_crud():
+async def get_user_crud_manager():
     async with get_db2() as db_session:
-        yield UserCrud(db_session)
+        yield UserCrudManager(db_session)

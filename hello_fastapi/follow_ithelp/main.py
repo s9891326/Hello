@@ -44,6 +44,11 @@ def root():
     return {"message": "Hello World"}
 
 
+@app.get("/hello")
+def hello():
+    raise Exception("4444")
+
+
 @app.get("/info")
 def get_info():
     databases = None

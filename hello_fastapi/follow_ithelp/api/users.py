@@ -10,7 +10,7 @@ from hello_fastapi.follow_ithelp.api.depends import (
     pagination_params,
     verify_token,
 )
-from hello_fastapi.follow_ithelp.crud.users import get_user_crud
+from hello_fastapi.follow_ithelp.crud.users import get_user_crud_manager
 from hello_fastapi.follow_ithelp.database.fake_db import get_db
 from hello_fastapi.follow_ithelp.database.generic import get_db2
 from hello_fastapi.follow_ithelp.models.item import Item
@@ -26,7 +26,7 @@ router = APIRouter(
 )
 fake_db = get_db()
 db_depends = Depends(get_db2)
-user_crud_depend = Depends(get_user_crud)
+user_crud_manager = Depends(get_user_crud_manager)
 
 
 # @router.get("/users")
@@ -115,7 +115,7 @@ def create_test(db_session: AsyncSession = db_depends):
     status_code=status.HTTP_201_CREATED,
 )
 async def create_users(
-    new_user: UserSchema.UserCreate, user_crud: UserCrud = user_crud_depend
+    new_user: UserSchema.UserCreate, user_crud: UserCrud = user_crud_manager
 ):
     user = await user_crud.get_user_id_by_email(new_user.email)
     if user:
@@ -142,7 +142,7 @@ async def get_user_by_id(user_id: int, db_session: AsyncSession = db_depends):
     response_description="Get list of user",
 )
 async def get_users(
-    page_params=Depends(pagination_params), user_crud: UserCrud = user_crud_depend
+    page_params=Depends(pagination_params), user_crud: UserCrud = user_crud_manager
 ):
     # stmt = select(User.name, User.id, User.email, User.avatar)
     # users = db_session.execute(stmt).all()
