@@ -70,3 +70,9 @@ class UserUpdateResponse(UserBase):
     avatar: Optional[str] = Field(min_length=3)
     age: int = Field(gt=0, lt=100)
     birthday: date = Field()
+
+
+class UserInDB(BaseModel):
+    id: int
+    name: str
+    password: str

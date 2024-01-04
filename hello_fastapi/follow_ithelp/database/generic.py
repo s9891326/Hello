@@ -6,8 +6,6 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from hello_fastapi.follow_ithelp.models.item import Item
-from hello_fastapi.follow_ithelp.models.users import User
 from hello_fastapi.follow_ithelp.setting.config import get_settings
 
 settings = get_settings()

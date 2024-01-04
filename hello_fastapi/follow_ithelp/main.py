@@ -9,10 +9,12 @@ app = FastAPI()
 if settings.run_mode == "ASYNC":
     from hello_fastapi.follow_ithelp.api.users import router as users_router
     from hello_fastapi.follow_ithelp.api.items import router as items_router
+    from hello_fastapi.follow_ithelp.api.auth import router as auth_router
     from hello_fastapi.follow_ithelp.database.generic import get_db2, init_db, close_db
 
     app.include_router(users_router)
     app.include_router(items_router)
+    app.include_router(auth_router)
 
     @app.on_event("startup")
     async def startup():

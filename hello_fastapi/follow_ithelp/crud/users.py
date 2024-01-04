@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
+from hello_fastapi.follow_ithelp.auth.passwd import get_password_hash
 from hello_fastapi.follow_ithelp.database.generic import get_db2
 from hello_fastapi.follow_ithelp.models.users import User
 from hello_fastapi.follow_ithelp.schemas import users as UserSchema
@@ -20,6 +21,7 @@ class UserCrudManager:
         return None
 
     async def create_user(self, new_user: UserSchema.UserCreate):
+        new_user.password = get_password_hash(new_user.password)
         user = User(
             name=new_user.name,
             password=new_user.password,
@@ -31,7 +33,7 @@ class UserCrudManager:
 
         self.db_session.add(user)
         await self.db_session.commit()
-        await self.db_session.refresh(user)
+        # await self.db_session.refresh(user)
 
         return user
 
@@ -44,6 +46,15 @@ class UserCrudManager:
         users = result.all()
 
         return users
+
+    async def get_user_by_username(self, username: str):
+        stmt = select(User.id, User.name, User.password).where(User.name == username)
+        result = await self.db_session.execute(stmt)
+        user = result.first()
+
+        if user:
+            return user
+        return None
 
 
 async def get_user_crud_manager():

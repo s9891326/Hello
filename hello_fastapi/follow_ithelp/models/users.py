@@ -5,8 +5,7 @@ from typing import Optional
 from sqlalchemy import Date, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from hello_fastapi.database import Base
-from hello_fastapi.follow_ithelp.models.base import BaseType
+from hello_fastapi.follow_ithelp.database.generic import Base
 
 
 # class User(Base):
@@ -52,7 +51,7 @@ from hello_fastapi.follow_ithelp.models.base import BaseType
 class User(Base):
     __tablename__ = "User"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True, autoincrement=True)
-    password: Mapped[str] = mapped_column(String(50))
+    password: Mapped[str] = mapped_column(String(60))
     name: Mapped[str] = mapped_column(String(30))
     age: Mapped[int]
     avatar: Mapped[str] = mapped_column(String(100), nullable=True)

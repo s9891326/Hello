@@ -3,8 +3,7 @@ from datetime import date, datetime
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from hello_fastapi.database import Base
-from hello_fastapi.follow_ithelp.models.base import BaseType
+from hello_fastapi.follow_ithelp.database.generic import Base
 
 
 class Item(Base):
