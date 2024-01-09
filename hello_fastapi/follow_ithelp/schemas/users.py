@@ -60,7 +60,7 @@ class UserCreateResponse(UserBase):
 
 class UserUpdate(BaseModel):
     name: Optional[str]
-    password: Optional[str] = Field(None, min_length=6)
+    # password: Optional[str] = Field(None, min_length=6)
     avatar: Optional[str] = Field(None, min_length=3)
     age: Optional[int] = Field(None, gt=0, lt=100)
     birthday: Optional[date] = Field(None)

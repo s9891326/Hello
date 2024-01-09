@@ -1,5 +1,7 @@
+from typing import Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from hello_fastapi.follow_ithelp.auth.passwd import get_password_hash
 from hello_fastapi.follow_ithelp.database.generic import get_db2
@@ -48,13 +50,33 @@ class UserCrudManager:
         return users
 
     async def get_user_by_username(self, username: str):
-        stmt = select(User.id, User.name, User.password).where(User.name == username)
+        stmt = select(User.id, User.name, User.password, User.email, User.avatar).where(User.name == username)
         result = await self.db_session.execute(stmt)
         user = result.first()
 
         if user:
             return user
         return None
+
+    async def check_user_id(self, user_id: str) -> Optional[str]:
+        stmt = select(User.id).where(User.id == user_id)
+        result = await self.db_session.execute(stmt)
+        user = result.first()
+
+        if user:
+            return user.id
+        return None
+
+    async def update_user(self, user_id: str, update_column: dict):
+        stmt = update(User).where(User.id == user_id).values(update_column)
+        await self.db_session.execute(stmt)
+
+        stmt = select(User.id, User.name, User.avatar, User.age, User.birthday).where(
+            User.id == user_id
+        )
+        result = await self.db_session.execute(stmt)
+        await self.db_session.commit()
+        return result.first()
 
 
 async def get_user_crud_manager():
