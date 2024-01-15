@@ -1,0 +1,7 @@
+[
+    {"id": 1, "name": "John Doe", "email": "john1@email.com", "password": "123456", "avatar": "https://i.imgur.com/4M34hi2.png", "birthday": "2003-01-01", "age": "20"},
+    {"id": 1, "name": "Alice Smith", "email": "alice1@email.com", "password": "password123", "avatar": "https://i.imgur.com/abc123.png", "birthday": "1995-05-15", "age": "28"},
+    {"id": 1, "name": "Bob Johnson", "email": "bob1@email.com", "password": "bobpass", "avatar": "https://i.imgur.com/xyz789.png", "birthday": "1980-11-30", "age": "42"},
+    {"id": 1, "name": "Eva Williams", "email": "eva1@email.com", "password": "evapassword", "avatar": "https://i.imgur.com/def456.png", "birthday": "1998-08-22", "age": "25"},
+    {"id": 1, "name": "David Brown", "email": "david2@email.com", "password": "davidpass", "avatar": "https://i.imgur.com/567mno.png", "birthday": "1990-04-10", "age": "33"}
+]

@@ -23,7 +23,7 @@ if __name__ == "__main__":
         "--db",
         help="Run the server in database type.",
         choices=["mysql", "postgresql"],
-        default="postgresql",
+        default="mysql",
     )
     # 新增 run_mode
     run_mode = parser.add_argument_group(
