@@ -135,10 +135,8 @@ async def create_users(
 
 
 @router.get("/users/{user_id}", response_model=UserSchema.UserRead)
-async def get_user_by_id(user_id: int, db_session: AsyncSession = db_depends):
-    stmt = select(User.name, User.id, User.email, User.avatar).where(User.id == user_id)
-    result = await db_session.execute(stmt)
-    user = result.first()
+async def get_user_by_id(user_id: int, user_crud: UserCrudManager = user_crud_manager):
+    user = await user_crud.get_user_by_id(user_id)
     if user:
         return user
 

@@ -5,6 +5,7 @@ from sqlalchemy import select, update
 
 from hello_fastapi.follow_ithelp.auth.passwd import get_password_hash
 from hello_fastapi.follow_ithelp.database.generic import get_db2
+# from hello_fastapi.follow_ithelp.database.redis_cache import generic_cache_get
 from hello_fastapi.follow_ithelp.models.users import User
 from hello_fastapi.follow_ithelp.schemas import users as UserSchema
 
@@ -50,7 +51,9 @@ class UserCrudManager:
         return users
 
     async def get_user_by_username(self, username: str):
-        stmt = select(User.id, User.name, User.password, User.email, User.avatar).where(User.name == username)
+        stmt = select(User.id, User.name, User.password, User.email, User.avatar).where(
+            User.name == username
+        )
         result = await self.db_session.execute(stmt)
         user = result.first()
 
@@ -77,6 +80,18 @@ class UserCrudManager:
         result = await self.db_session.execute(stmt)
         await self.db_session.commit()
         return result.first()
+
+    # @generic_cache_get(key="user_id", cls=UserSchema.UserRead)
+    async def get_user_by_id(self, user_id: int):
+        stmt = select(User.name, User.id, User.email, User.avatar).where(
+            User.id == user_id
+        )
+        result = await self.db_session.execute(stmt)
+        user = result.first()
+
+        if user:
+            return user
+        return None
 
 
 async def get_user_crud_manager():
