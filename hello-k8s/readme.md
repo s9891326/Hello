@@ -1,5 +1,17 @@
 ## K8s學習指令
 
+## [來源](https://chengweihu.com/kubernetes-tutorial-1-pod-node/)
+![img.png](img.png)
+### 運作流程
+接下來我們用一個簡單的問題「Kubernetes 是如何建立一個 Pod？」來複習整體 Kubernetes 的架構。上圖為一個簡易的 Kubernetes Cluster，通常一個 Cluster 中其實會有多個 Master 作為備援，但為了簡化我們只顯示一個。
+
+當使用者要部署一個新的 Pod 到 Kubernetes Cluster 時，使用者要先透過 User Command（kubectl）輸入建立 Pod 的對應指令（下面會在解說如何實際動手操作來建立一個 Pod）。此時指令會經過一層確認使用者身份的認證後，傳遞到 Master Node 中的 API Server，API Server 會把指令備份到 etcd 。
+
+接下來 controller-manager 會從 API Server 收到需要創建一個新的 Pod 的訊息，並檢查如果資源許可，就會建立一個新的 Pod。最後 Scheduler 在定期訪問 API Server 時，會詢問 controller-manager 是否有建置新的 Pod，如果發現新建立的 Pod 時，Scheduler 就會負責把 Pod 配送到最適合的一個 Node 上面。
+
+雖然上面的基本運作看似複雜，但實際上我們在操作時，只要輸入一行指令後 Kubernetes 就會自動幫我們完成後續的動作。
+
+
 ### Pod
 - 是k8s可運行的最小`單位`(類似`公分`這個長度單位)。pod內可以跑多個docker container，但還是推薦一個pod內只跑一個docker container
    ```shell
