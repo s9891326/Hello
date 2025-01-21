@@ -40,5 +40,5 @@ def second():
 
 
 if __name__ == '__main__':
-    # first()
-    second()
+    first()
+    # second()
