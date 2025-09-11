@@ -8,9 +8,7 @@ class EventLoop:
         self.scheduled : List[Handle] = []
         self.ready = collections.deque()
 
-    def run(self, coro):
-        self.ready.append(Task(coro))
-
+    def run(self):
         while True:
             for schedule in self.scheduled:
                 if time.time() >= schedule.end_time:
@@ -21,6 +19,18 @@ class EventLoop:
                 handle = self.ready.popleft()
                 handle()
 
+    # def run(self, coro):
+    #     self.ready.append(Task(coro))
+
+    #     while True:
+    #         for schedule in self.scheduled:
+    #             if time.time() >= schedule.end_time:
+    #                 self.scheduled.remove(schedule)
+    #                 self.ready.append(schedule)
+            
+    #         while len(self.ready) != 0:
+    #             handle = self.ready.popleft()
+    #             handle()
 
 class Task:
     def __init__(self, coro):
@@ -34,7 +44,7 @@ class Task:
         else:
             if isinstance(result, Future):
                 result.add_done_callback(self.__call__)
-
+        print("Task __call__")
 
 class Handle:
     def __init__(self, callback, end_time):
@@ -43,10 +53,6 @@ class Handle:
 
     def __call__(self):
         self.callback()
-
-
-loop = EventLoop()
-
 
 class Future:
     def __init__(self):
@@ -58,10 +64,11 @@ class Future:
         for callback in self.callbacks:
             callback()
 
-    def add_done_callback(self, callback):
-        self.callbacks.append(callback)
+    def add_done_callback(self, fn):
+        self.callbacks.append(fn)
 
     def __iter__(self):
+        print("Future __iter__")
         if self.result is None:
             # 第一次 await Future 時 -- 如果還沒完成，先將 future 自己 yield 出去，
             # Task 那邊收到 yield 的 result 若是 Future 會去偵聽 future 的完成事件 (via add_done_callback)，
@@ -72,24 +79,43 @@ class Future:
             raise RuntimeError("await wasn't used with future")
         return self.result
 
+loop = EventLoop()
 
-def sleep(seconds: int):
+
+def sleep(delay: int):
     future = Future()
-    end_time = time.time() + seconds
-    schedule = Handle(lambda: future.set_result("DONE!"), end_time)
-    loop.scheduled.append(schedule)
+    end_time = time.time() + delay
+    handle = Handle(lambda: future.set_result("Done!!!"), end_time)
+    loop.scheduled.append(handle)
     yield future
 
-
 def main():
-    print("Sleeping...")
+    print("應用程式開始")
     yield from sleep(1)
     print("Hi...")
     yield from sleep(3)
     print("Yo...")
     yield from sleep(6)
-    print("End!")
+    print("應用程式結束")
 
+def task1():
+    print("Task 1 start")
+    yield from sleep(2)
+    print("Task 1 end")
 
-if __name__ == '__main__':
-    loop.run(main())
+def task2():
+    print("Task 2 start")
+    yield from sleep(6)
+    print("Task 2 end")
+
+def main2():
+    t1 = Task(task1())
+    t2 = Task(task2())
+    loop.ready.append(t1)
+    loop.ready.append(t2)
+
+if __name__ == "__main__":
+    # loop.run(main())
+    main2()
+    loop.run()
+    
